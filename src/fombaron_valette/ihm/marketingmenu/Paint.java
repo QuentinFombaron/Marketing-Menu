@@ -32,19 +32,16 @@ import javax.swing.AbstractAction;
 import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 
-
-/* paint *******************************************************************/
-
 class Paint extends JFrame {
-	Vector<Shape> shapes = new Vector<Shape>();
+	private Vector<Shape> shapes = new Vector<Shape>();
 
 	class Tool extends AbstractAction
 	           implements MouseInputListener {
 	   Point o;
 		Shape shape;
-		public Tool(String name) { super(name); }
+		Tool(String name) { super(name); }
 		public void actionPerformed(ActionEvent e) {
-			System.out.println("using tool " + this);
+			System.out.println("Using tool " + this);
 			panel.removeMouseListener(tool);
 			panel.removeMouseMotionListener(tool);
 			tool = this;
@@ -60,7 +57,7 @@ class Paint extends JFrame {
 		public void mouseMoved(MouseEvent e) {}
 	}
 	
-	Tool tools[] = {
+	private Tool tools[] = {
 		new Tool("pen") {
 			public void mouseDragged(MouseEvent e) {
 				Path2D.Double path = (Path2D.Double)shape;
@@ -86,11 +83,11 @@ class Paint extends JFrame {
 			}
 		}
 	};
-	Tool tool;
+	private Tool tool;
 
-	JPanel panel;
+	private JPanel panel;
 	
-	public Paint(String title) {
+	private Paint(String title) {
 		super(title);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setMinimumSize(new Dimension(800, 600));
@@ -119,9 +116,6 @@ class Paint extends JFrame {
 		pack();
 		setVisible(true);
 	}
-
-
-/* main *********************************************************************/
 
 	public static void main(String argv[]) {
 		SwingUtilities.invokeLater(new Runnable() {
