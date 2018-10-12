@@ -7,11 +7,10 @@ package fombaron_valette.ihm.marketingmenu;
 
 /* imports *****************************************************************/
 
-import javafx.scene.input.MouseButton;
-
 import static java.lang.Math.*;
 
 import java.awt.geom.Ellipse2D;
+import java.awt.geom.Line2D;
 import java.util.Vector;
 
 import java.awt.BorderLayout;
@@ -39,7 +38,8 @@ class Paint extends JFrame implements ActionListener {
             implements MouseInputListener {
         Point o;
         Shape shape;
-        Ellipse2D.Double menu;
+        MarkingMenuUI menuUI;
+        MarkingMenu markingMenu = new MarkingMenu(3);
 
         Tool(String name) { super(name); }
         public void actionPerformed(ActionEvent e) {
@@ -55,24 +55,42 @@ class Paint extends JFrame implements ActionListener {
         public void mouseExited(MouseEvent e) {}
         public void mousePressed(MouseEvent e) {
             o = e.getPoint();
-            shapes.remove(menu);
             if (e.getButton() == MouseEvent.BUTTON1) {
                 System.out.println("Click gauche");
             } else if (e.getButton() == MouseEvent.BUTTON3) {
                 System.out.println("Click droit");
                 openMenu();
+                markingMenu.show(o);
             }
             panel.repaint();
         }
-        public void mouseReleased(MouseEvent e) { shape = null; }
+        public void mouseReleased(MouseEvent e) {
+            shape = null;
+            markingMenu.getSelectedItem(e.getX(), e.getY(), o.getX(), o.getY());
+            if (e.getX() < o.getX()) {
+                System.out.println("Item gauche");
+            } else {
+                System.out.println("Item droit");
+            }
+            shapes.remove(menuUI);
+            panel.repaint();
+        }
         public void mouseDragged(MouseEvent e) {}
         public void mouseMoved(MouseEvent e) {}
 
         private void openMenu() {
-            menu = (Ellipse2D.Double) shape;
-            if (menu == null) {
-                menu = new Ellipse2D.Double(o.getX()-100, o.getY()-100, 200, 200);
-                shapes.add(shape = menu);
+            menuUI = (MarkingMenuUI) shape;
+            if (menuUI == null) {
+                menuUI = new MarkingMenuUI(o.getX()-100, o.getY()-100, 200, 200, markingMenu.getNbItems());
+                for(int i = 0 ; i < markingMenu.getNbItems();i++){
+                    Line2D.Double line =new Line2D.Double(o.getX(),
+                            o.getY(),
+                            (o.getX() + (200/2) * Math.cos((i * (2*Math.PI/markingMenu.getNbItems())))),
+                            (o.getY() + (200/2) * Math.sin((i * (2*Math.PI/markingMenu.getNbItems()))))
+                    );
+                    shapes.add(line);
+                }
+                shapes.add(shape = menuUI);
             }
         }
     }
@@ -187,7 +205,7 @@ class Paint extends JFrame implements ActionListener {
     public static void main(String argv[]) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                Paint markingMenu = new Paint("Marking Menu");
+                Paint markingMenu = new Paint("Marking MarkingMenu");
             }
         });
     }
@@ -205,10 +223,6 @@ class ComboItem {
 
     @Override
     public String toString() {
-        return key;
-    }
-
-    public String getKey() {
         return key;
     }
 
