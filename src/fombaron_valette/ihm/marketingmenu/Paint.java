@@ -7,6 +7,8 @@ package fombaron_valette.ihm.marketingmenu;
 
 /* imports *****************************************************************/
 
+import javafx.scene.input.MouseButton;
+
 import static java.lang.Math.*;
 
 import java.awt.geom.Ellipse2D;
@@ -50,47 +52,65 @@ class Paint extends JFrame implements ActionListener {
         public void mouseClicked(MouseEvent e) {}
         public void mouseEntered(MouseEvent e) {}
         public void mouseExited(MouseEvent e) {}
-        public void mousePressed(MouseEvent e) { o = e.getPoint(); }
+        public void mousePressed(MouseEvent e) {
+            if (e.getButton() == MouseEvent.BUTTON1) {
+                System.out.println("Click gauche");
+                o = e.getPoint();
+            } else if (e.getButton() == MouseEvent.BUTTON3) {
+                System.out.println("Click droit");
+                openMenu();
+            }
+        }
         public void mouseReleased(MouseEvent e) { shape = null; }
         public void mouseDragged(MouseEvent e) {}
         public void mouseMoved(MouseEvent e) {}
+
+        private void openMenu() {
+
+        }
     }
 
     private Tool tools[] = {
             new Tool("Pen") {
                 public void mouseDragged(MouseEvent e) {
-                    Path2D.Double path = (Path2D.Double)shape;
-                    if(path == null) {
-                        path = new Path2D.Double();
-                        path.moveTo(o.getX(), o.getY());
-                        shapes.add(shape = path);
+                    if (e.getButton() == MouseEvent.BUTTON1) {
+                        Path2D.Double path = (Path2D.Double) shape;
+                        if (path == null) {
+                            path = new Path2D.Double();
+                            path.moveTo(o.getX(), o.getY());
+                            shapes.add(shape = path);
+                        }
+                        path.lineTo(e.getX(), e.getY());
+                        panel.repaint();
                     }
-                    path.lineTo(e.getX(), e.getY());
-                    panel.repaint();
                 }
             },
             new Tool("Rectangle") {
                 public void mouseDragged(MouseEvent e) {
-                    Rectangle2D.Double rect = (Rectangle2D.Double)shape;
-                    if(rect == null) {
-                        rect = new Rectangle2D.Double(o.getX(), o.getY(), 0, 0);
-                        shapes.add(shape = rect);
+                    if (e.getButton() == MouseEvent.BUTTON1) {
+                        Rectangle2D.Double rect = (Rectangle2D.Double) shape;
+                        if (rect == null) {
+                            rect = new Rectangle2D.Double(o.getX(), o.getY(), 0, 0);
+                            shapes.add(shape = rect);
+                        }
+                        rect.setRect(min(e.getX(), o.getX()), min(e.getY(), o.getY()),
+                                abs(e.getX() - o.getX()), abs(e.getY() - o.getY()));
+                        panel.repaint();
                     }
-                    rect.setRect(min(e.getX(), o.getX()), min(e.getY(), o.getY()),
-                            abs(e.getX()- o.getX()), abs(e.getY()- o.getY()));
-                    panel.repaint();
                 }
             },
             new Tool("Elipse") {
                 public void mouseDragged(MouseEvent e) {
-                    Ellipse2D.Double elip = (Ellipse2D.Double)shape;
-                    if(elip == null) {
-                        elip = new Ellipse2D.Double(o.getX(), o.getY(), 0, 0);
-                        shapes.add(shape = elip);
+                    if (e.getButton() == MouseEvent.BUTTON1) {
+                        Ellipse2D.Double elip = (Ellipse2D.Double) shape;
+                        if (elip == null) {
+                            elip = new Ellipse2D.Double(o.getX(), o.getY(), 0, 0);
+                            shapes.add(shape = elip);
+                        }
+                        elip.setFrame(min(e.getX(), o.getX()), min(e.getY(), o.getY()),
+                                abs(e.getX() - o.getX()), abs(e.getY() - o.getY()));
+                        panel.repaint();
                     }
-                    elip.setFrame(min(e.getX(), o.getX()), min(e.getY(), o.getY()),
-                            abs(e.getX()- o.getX()), abs(e.getY()- o.getY()));
-                    panel.repaint();
                 }
             }
     };
@@ -107,8 +127,8 @@ class Paint extends JFrame implements ActionListener {
         JComboBox<ComboItem> colorList = new JComboBox<>();
         colorList.addItem(new ComboItem("Black", Color.BLACK));
         colorList.addItem(new ComboItem("Red", Color.RED));
-        colorList.addItem(new ComboItem("Blue", Color.BLUE));
         colorList.addItem(new ComboItem("Green", Color.GREEN));
+        colorList.addItem(new ComboItem("Blue", Color.BLUE));
         colorList.setMaximumSize(colorList.getPreferredSize());
         colorList.setSelectedIndex(0);
         colorList.addActionListener(this);
