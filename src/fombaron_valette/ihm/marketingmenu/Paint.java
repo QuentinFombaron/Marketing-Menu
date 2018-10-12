@@ -33,13 +33,14 @@ import javax.swing.event.*;
 class Paint extends JFrame implements ActionListener {
     private Vector<Shape> shapes = new Vector<Shape>();
 
-    private JComboBox<ComboItem> colorList;
     private Graphics2D g2;
 
     class Tool extends AbstractAction
             implements MouseInputListener {
         Point o;
         Shape shape;
+        Ellipse2D.Double menu;
+
         Tool(String name) { super(name); }
         public void actionPerformed(ActionEvent e) {
             System.out.println("Using tool " + this);
@@ -53,20 +54,26 @@ class Paint extends JFrame implements ActionListener {
         public void mouseEntered(MouseEvent e) {}
         public void mouseExited(MouseEvent e) {}
         public void mousePressed(MouseEvent e) {
+            o = e.getPoint();
+            shapes.remove(menu);
             if (e.getButton() == MouseEvent.BUTTON1) {
                 System.out.println("Click gauche");
-                o = e.getPoint();
             } else if (e.getButton() == MouseEvent.BUTTON3) {
                 System.out.println("Click droit");
                 openMenu();
             }
+            panel.repaint();
         }
         public void mouseReleased(MouseEvent e) { shape = null; }
         public void mouseDragged(MouseEvent e) {}
         public void mouseMoved(MouseEvent e) {}
 
         private void openMenu() {
-
+            menu = (Ellipse2D.Double) shape;
+            if (menu == null) {
+                menu = new Ellipse2D.Double(o.getX()-100, o.getY()-100, 200, 200);
+                shapes.add(shape = menu);
+            }
         }
     }
 
