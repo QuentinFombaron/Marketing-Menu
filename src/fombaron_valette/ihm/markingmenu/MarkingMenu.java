@@ -1,4 +1,4 @@
-package fombaron_valette.ihm.marketingmenu;
+package fombaron_valette.ihm.markingmenu;
 
 import java.awt.*;
 

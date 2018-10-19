@@ -3,7 +3,7 @@
 // content : basic painting app
 //////////////////////////////////////////////////////////////////////////////
 
-package fombaron_valette.ihm.marketingmenu;
+package fombaron_valette.ihm.markingmenu;
 
 /* imports *****************************************************************/
 
@@ -81,15 +81,10 @@ class Paint extends JFrame implements ActionListener {
         private void openMenu() {
             menuUI = (MarkingMenuUI) shape;
             if (menuUI == null) {
-                menuUI = new MarkingMenuUI(o.getX()-100, o.getY()-100, 200, 200, markingMenu.getNbItems());
-                for(int i = 0 ; i < markingMenu.getNbItems();i++){
-                    Line2D.Double line =new Line2D.Double(o.getX(),
-                            o.getY(),
-                            (o.getX() + (200/2) * Math.cos((i * (2*Math.PI/markingMenu.getNbItems())))),
-                            (o.getY() + (200/2) * Math.sin((i * (2*Math.PI/markingMenu.getNbItems()))))
-                    );
-                    shapes.add(line);
-                }
+                int diameter = 200;
+                int radius = diameter/2;
+                menuUI = new MarkingMenuUI(o.getX()-radius, o.getY()-radius, diameter, diameter, markingMenu.getNbItems());
+
                 shapes.add(shape = menuUI);
             }
         }
