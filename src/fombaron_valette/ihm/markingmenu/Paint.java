@@ -39,7 +39,7 @@ class Paint extends JFrame implements ActionListener {
         Point o;
         Shape shape;
         MarkingMenuUI menuUI;
-        MarkingMenu markingMenu = new MarkingMenu(3);
+        MarkingMenu markingMenu = new MarkingMenu(6);
 
         Tool(String name) { super(name); }
         public void actionPerformed(ActionEvent e) {
@@ -72,7 +72,12 @@ class Paint extends JFrame implements ActionListener {
             } else {
                 System.out.println("Item droit");
             }
-            shapes.remove(menuUI);
+
+            shapes.remove(menuUI.getCircle());
+            for(Line2D.Double line: menuUI.getLines()) {
+                shapes.remove(line);
+            }
+
             panel.repaint();
         }
         public void mouseDragged(MouseEvent e) {}
@@ -81,11 +86,15 @@ class Paint extends JFrame implements ActionListener {
         private void openMenu() {
             menuUI = (MarkingMenuUI) shape;
             if (menuUI == null) {
-                int diameter = 200;
+                int diameter = 300;
                 int radius = diameter/2;
-                menuUI = new MarkingMenuUI(o.getX()-radius, o.getY()-radius, diameter, diameter, markingMenu.getNbItems());
+                menuUI = new MarkingMenuUI(o.getX(), o.getY(), radius, markingMenu.getNbItems());
 
-                shapes.add(shape = menuUI);
+                shapes.add(shape = menuUI.getCircle());
+                for(Line2D.Double line: menuUI.getLines()) {
+                    shapes.add(shape = line);
+                }
+
             }
         }
     }
