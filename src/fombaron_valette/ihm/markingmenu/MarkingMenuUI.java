@@ -1,5 +1,6 @@
 package fombaron_valette.ihm.markingmenu;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.*;
 import java.util.ArrayList;
@@ -9,7 +10,7 @@ class MarkingMenuUI {
     private int nbItems;
     private Ellipse2D.Double circle;
     private List<Line2D.Double> lines = new ArrayList<>();
-    private List<Label> itemNames = new ArrayList<>();
+    private List<JPanel> itemNames = new ArrayList<>();
 
 
     MarkingMenuUI(double x, double y, double r, int nbItems) {
@@ -20,7 +21,11 @@ class MarkingMenuUI {
     }
 
     private void drawItemNames() {
-
+        for(int i = 0 ;i < nbItems; i++){
+            JPanel panel = new JPanel();
+            panel.add(new JLabel("Item "+i));
+            itemNames.add(panel);
+        }
     }
 
     private void drawLines(double x, double y, double r){
@@ -41,4 +46,9 @@ class MarkingMenuUI {
     public Ellipse2D.Double getCircle() {
         return circle;
     }
+
+    public List<JPanel> getItemNames() {
+        return itemNames;
+    }
+
 }

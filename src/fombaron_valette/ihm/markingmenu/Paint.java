@@ -39,7 +39,7 @@ class Paint extends JFrame implements ActionListener {
         Point o;
         Shape shape;
         MarkingMenuUI menuUI;
-        MarkingMenu markingMenu = new MarkingMenu(6);
+        MarkingMenu markingMenu = new MarkingMenu(8);
 
         Tool(String name) { super(name); }
         public void actionPerformed(ActionEvent e) {
@@ -73,6 +73,11 @@ class Paint extends JFrame implements ActionListener {
                 System.out.println("Item droit");
             }
 
+            double angle = Math.atan(((double)e.getY()-o.getY()) / (double)e.getX()-o.getX()) *(180/Math.PI);
+            int k = (int)((angle * markingMenu.getNbItems()) / angle);
+            System.out.println(e.getX() + "; " + o.getX());
+            System.out.println("Angle : " + angle + "; Item n° : " + k);
+
             shapes.remove(menuUI.getCircle());
             for(Line2D.Double line: menuUI.getLines()) {
                 shapes.remove(line);
@@ -94,7 +99,6 @@ class Paint extends JFrame implements ActionListener {
                 for(Line2D.Double line: menuUI.getLines()) {
                     shapes.add(shape = line);
                 }
-
             }
         }
     }
