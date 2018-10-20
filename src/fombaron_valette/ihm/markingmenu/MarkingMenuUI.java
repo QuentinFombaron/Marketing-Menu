@@ -32,7 +32,6 @@ class MarkingMenuUI {
     void drawSelectedItem(double menuX, double menuY, int i) {
         double angle1 = ((2 * Math.PI) / nbItems) * i;
         double angle2 = ((2 * Math.PI) / nbItems) * (i + 1.0);
-        System.out.println();
 
         int x1Points[] = {
                 (int) menuX,

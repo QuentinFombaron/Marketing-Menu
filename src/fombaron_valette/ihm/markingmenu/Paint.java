@@ -18,7 +18,7 @@ import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.event.*;
 
-class Paint extends JFrame implements ActionListener {
+class Paint extends JFrame {
     private HashMap<Shape, Color> shapes = new HashMap<>();
     private MarkingMenuUI menuUI;
     JComboBox<ComboItem> colorList = new JComboBox<>();
@@ -111,9 +111,9 @@ class Paint extends JFrame implements ActionListener {
                         if (path == null) {
                             path = new Path2D.Double();
                             path.moveTo(o.getX(), o.getY());
-                            shapes.put(shape = path, ((ComboItem) colorList.getSelectedItem()).getValue());
                         }
                         path.lineTo(e.getX(), e.getY());
+                        shapes.put(shape = path, ((ComboItem) colorList.getSelectedItem()).getValue());
                     } else if (e.getButton() == MouseEvent.BUTTON3) {
                         shapes.remove(menuUI.getPolygon());
                         int selectedItem = markingMenu.getSelectedItem(e.getX(), e.getY(), o.getX(), o.getY());
@@ -127,14 +127,19 @@ class Paint extends JFrame implements ActionListener {
                 public void mouseDragged(MouseEvent e) {
                     if (e.getButton() == MouseEvent.BUTTON1) {
                         Rectangle2D.Double rect = (Rectangle2D.Double) shape;
+
                         if (rect == null) {
                             rect = new Rectangle2D.Double(o.getX(), o.getY(), 0, 0);
-                            shapes.put(shape = rect, ((ComboItem) colorList.getSelectedItem()).getValue());
                         }
-                        rect.setRect(min(e.getX(), o.getX()), min(e.getY(), o.getY()),
-                                abs(e.getX() - o.getX()), abs(e.getY() - o.getY()));
-                        panel.repaint();
+                        rect.setRect(min(e.getX(), o.getX()), min(e.getY(), o.getY()), abs(e.getX() - o.getX()), abs(e.getY() - o.getY()));
+                        shapes.put(shape = rect, ((ComboItem) colorList.getSelectedItem()).getValue());
+                    } else if (e.getButton() == MouseEvent.BUTTON3) {
+                        shapes.remove(menuUI.getPolygon());
+                        int selectedItem = markingMenu.getSelectedItem(e.getX(), e.getY(), o.getX(), o.getY());
+                        menuUI.drawSelectedItem(o.getX(), o.getY(), selectedItem);
+                        shapes.put(menuUI.getPolygon(), Color.BLACK);
                     }
+                    panel.repaint();
                 }
             },
             new Tool("Elipse") {
@@ -143,12 +148,17 @@ class Paint extends JFrame implements ActionListener {
                         Ellipse2D.Double elip = (Ellipse2D.Double) shape;
                         if (elip == null) {
                             elip = new Ellipse2D.Double(o.getX(), o.getY(), 0, 0);
-                            shapes.put(shape = elip, ((ComboItem) colorList.getSelectedItem()).getValue());
                         }
                         elip.setFrame(min(e.getX(), o.getX()), min(e.getY(), o.getY()),
                                 abs(e.getX() - o.getX()), abs(e.getY() - o.getY()));
-                        panel.repaint();
+                        shapes.put(shape = elip, ((ComboItem) colorList.getSelectedItem()).getValue());
+                    } else if (e.getButton() == MouseEvent.BUTTON3) {
+                        shapes.remove(menuUI.getPolygon());
+                        int selectedItem = markingMenu.getSelectedItem(e.getX(), e.getY(), o.getX(), o.getY());
+                        menuUI.drawSelectedItem(o.getX(), o.getY(), selectedItem);
+                        shapes.put(menuUI.getPolygon(), Color.BLACK);
                     }
+                    panel.repaint();
                 }
             }
     };
@@ -167,7 +177,6 @@ class Paint extends JFrame implements ActionListener {
         colorList.addItem(new ComboItem("Blue", Color.BLUE));
         colorList.setMaximumSize(colorList.getPreferredSize());
         colorList.setSelectedIndex(0);
-        colorList.addActionListener(this);
 
         add(new JToolBar() {{
             for (AbstractAction tool : tools) {
@@ -185,12 +194,13 @@ class Paint extends JFrame implements ActionListener {
 
                 g2.setColor(Color.WHITE);
                 g2.fillRect(0, 0, getWidth(), getHeight());
+                g2.setColor(Color.BLACK);
+
+                if (menuUI != null && menuUI.getPolygon() != null) {
+                    g2.fill(menuUI.getPolygon());
+                }
 
                 for (Shape shape : shapes.keySet()) {
-                    if (menuUI != null && menuUI.getPolygon() != null) {
-                        g2.setColor(Color.BLACK);
-                        g2.fill(menuUI.getPolygon());
-                    }
                     g2.setColor(shapes.get(shape));
                     g2.draw(shape);
                 }
@@ -199,17 +209,6 @@ class Paint extends JFrame implements ActionListener {
 
         pack();
         setVisible(true);
-    }
-
-    public void actionPerformed(ActionEvent e) {
-        JComboBox colorList = (JComboBox) e.getSource();
-        ComboItem colorItem = (ComboItem) colorList.getSelectedItem();
-        if (colorItem != null) {
-            g2.setColor(colorItem.getValue());
-        } else {
-            g2.setColor(Color.BLACK);
-        }
-        panel.repaint();
     }
 
     public static void main(String argv[]) {
