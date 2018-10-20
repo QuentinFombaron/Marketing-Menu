@@ -22,7 +22,7 @@ class Paint extends JFrame {
     private HashMap<Shape, Color> shapes = new HashMap<>();
     private MarkingMenuUI menuUI;
     private JComboBox<ComboItem> colorList = new JComboBox<>();
-    private int nbItem = 8;
+    private int nbItem = 2;
     private MarkingMenu markingMenu = new MarkingMenu(nbItem);
 
     private Graphics2D g2;
@@ -72,8 +72,8 @@ class Paint extends JFrame {
                 for (Line2D.Double line : menuUI.getLines()) {
                     shapes.remove(line);
                 }
-                shapes.remove(menuUI.getPolygon());
-                menuUI.setToNullPolygon();
+                shapes.remove(menuUI.getArc());
+                menuUI.setToNullArc();
             }
             panel.repaint();
         }
@@ -98,7 +98,7 @@ class Paint extends JFrame {
                 }
 
                 menuUI.drawSelectedItem(o.getX(), o.getY(), selectedItem);
-                shapes.put(menuUI.getPolygon(), Color.BLACK);
+                shapes.put(menuUI.getArc(), Color.BLACK);
             }
         }
     }
@@ -115,10 +115,10 @@ class Paint extends JFrame {
                         path.lineTo(e.getX(), e.getY());
                         shapes.put(shape = path, ((ComboItem) colorList.getSelectedItem()).getValue());
                     } else if (e.getButton() == MouseEvent.BUTTON3) {
-                        shapes.remove(menuUI.getPolygon());
+                        shapes.remove(menuUI.getArc());
                         int selectedItem = markingMenu.getSelectedItem(e.getX(), e.getY(), o.getX(), o.getY());
                         menuUI.drawSelectedItem(o.getX(), o.getY(), selectedItem);
-                        shapes.put(menuUI.getPolygon(), Color.BLACK);
+                        shapes.put(menuUI.getArc(), Color.BLACK);
                     }
                     panel.repaint();
                 }
@@ -134,10 +134,10 @@ class Paint extends JFrame {
                         rect.setRect(min(e.getX(), o.getX()), min(e.getY(), o.getY()), abs(e.getX() - o.getX()), abs(e.getY() - o.getY()));
                         shapes.put(shape = rect, ((ComboItem) colorList.getSelectedItem()).getValue());
                     } else if (e.getButton() == MouseEvent.BUTTON3) {
-                        shapes.remove(menuUI.getPolygon());
+                        shapes.remove(menuUI.getArc());
                         int selectedItem = markingMenu.getSelectedItem(e.getX(), e.getY(), o.getX(), o.getY());
                         menuUI.drawSelectedItem(o.getX(), o.getY(), selectedItem);
-                        shapes.put(menuUI.getPolygon(), Color.BLACK);
+                        shapes.put(menuUI.getArc(), Color.BLACK);
                     }
                     panel.repaint();
                 }
@@ -153,10 +153,10 @@ class Paint extends JFrame {
                                 abs(e.getX() - o.getX()), abs(e.getY() - o.getY()));
                         shapes.put(shape = elip, ((ComboItem) colorList.getSelectedItem()).getValue());
                     } else if (e.getButton() == MouseEvent.BUTTON3) {
-                        shapes.remove(menuUI.getPolygon());
+                        shapes.remove(menuUI.getArc());
                         int selectedItem = markingMenu.getSelectedItem(e.getX(), e.getY(), o.getX(), o.getY());
                         menuUI.drawSelectedItem(o.getX(), o.getY(), selectedItem);
-                        shapes.put(menuUI.getPolygon(), Color.BLACK);
+                        shapes.put(menuUI.getArc(), Color.BLACK);
                     }
                     panel.repaint();
                 }
@@ -196,8 +196,8 @@ class Paint extends JFrame {
                 g2.fillRect(0, 0, getWidth(), getHeight());
                 g2.setColor(Color.BLACK);
 
-                if (menuUI != null && menuUI.getPolygon() != null) {
-                    g2.fill(menuUI.getPolygon());
+                if (menuUI != null && menuUI.getArc() != null) {
+                    g2.fill(menuUI.getArc());
                     for(int i=0; i < markingMenu.getNbItems(); i++) {
                         g2.drawString(
                                 String.valueOf(i),

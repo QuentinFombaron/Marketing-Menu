@@ -10,7 +10,7 @@ class MarkingMenuUI {
     private Ellipse2D.Double circle;
     private List<Line2D.Double> lines = new ArrayList<>();
 
-    private GeneralPath polygon;
+    private Arc2D.Double arc;
     private List<JPanel> itemNames = new ArrayList<>();
 
     private int menuX;
@@ -35,28 +35,9 @@ class MarkingMenuUI {
     }
 
     void drawSelectedItem(double menuX, double menuY, int i) {
-        double angle1 = ((2 * Math.PI) / nbItems) * i;
-        double angle2 = ((2 * Math.PI) / nbItems) * (i + 1.0);
+        double angle = (double)-((360 / nbItems) * i);
 
-        int xPoints[] = {
-                (int) menuX,
-                (int) (menuX + (50.0 * Math.cos(angle1))),
-                (int) (menuX + (50.0 * Math.cos(angle2)))
-        };
-        int yPoints[] = {
-                (int) menuY,
-                (int) (menuY + (50.0 * Math.sin(angle1))),
-                (int) (menuY + (50.0 * Math.sin(angle2)))
-        };
-
-        polygon = new GeneralPath(GeneralPath.WIND_EVEN_ODD, xPoints.length);
-        polygon.moveTo(xPoints[0], yPoints[0]);
-
-        for (int index = 1; index < xPoints.length; index++) {
-            polygon.lineTo(xPoints[index], yPoints[index]);
-        }
-
-        polygon.closePath();
+        arc = new Arc2D.Double(menuX-50, menuY-50, 100, 100, angle, (double)-(360/(nbItems)), Arc2D.PIE);
     }
 
     private void drawLines(double x, double y, double r) {
@@ -78,12 +59,12 @@ class MarkingMenuUI {
         return circle;
     }
 
-    GeneralPath getPolygon() {
-        return polygon;
+    Arc2D.Double getArc() {
+        return arc;
     }
 
-    void setToNullPolygon() {
-        this.polygon = null;
+    void setToNullArc() {
+        this.arc = null;
     }
 
     public List<JPanel> getItemNames() {
