@@ -15,6 +15,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.RenderingHints;
 import java.awt.event.*;
+import javax.sound.sampled.Line;
 import javax.swing.*;
 import javax.swing.event.*;
 
@@ -22,7 +23,7 @@ class Paint extends JFrame {
     private HashMap<Shape, Color> shapes = new HashMap<>();
     private MarkingMenuUI menuUI;
     private JComboBox<ComboItem> colorList = new JComboBox<>();
-    private int nbItem = 2;
+    private int nbItem = 8;
     private MarkingMenu markingMenu = new MarkingMenu(nbItem);
 
     private Graphics2D g2;
@@ -92,13 +93,7 @@ class Paint extends JFrame {
                 int radius = diameter / 2;
                 menuUI = new MarkingMenuUI(o.getX(), o.getY(), radius, markingMenu.getNbItems());
 
-                shapes.put(shape = menuUI.getCircle(), Color.BLACK);
-                for (Line2D.Double line : menuUI.getLines()) {
-                    shapes.put(shape = line, Color.BLACK);
-                }
-
                 menuUI.drawSelectedItem(o.getX(), o.getY(), selectedItem);
-                shapes.put(menuUI.getArc(), Color.BLACK);
             }
         }
     }
@@ -118,7 +113,6 @@ class Paint extends JFrame {
                         shapes.remove(menuUI.getArc());
                         int selectedItem = markingMenu.getSelectedItem(e.getX(), e.getY(), o.getX(), o.getY());
                         menuUI.drawSelectedItem(o.getX(), o.getY(), selectedItem);
-                        shapes.put(menuUI.getArc(), Color.BLACK);
                     }
                     panel.repaint();
                 }
@@ -137,7 +131,6 @@ class Paint extends JFrame {
                         shapes.remove(menuUI.getArc());
                         int selectedItem = markingMenu.getSelectedItem(e.getX(), e.getY(), o.getX(), o.getY());
                         menuUI.drawSelectedItem(o.getX(), o.getY(), selectedItem);
-                        shapes.put(menuUI.getArc(), Color.BLACK);
                     }
                     panel.repaint();
                 }
@@ -156,7 +149,6 @@ class Paint extends JFrame {
                         shapes.remove(menuUI.getArc());
                         int selectedItem = markingMenu.getSelectedItem(e.getX(), e.getY(), o.getX(), o.getY());
                         menuUI.drawSelectedItem(o.getX(), o.getY(), selectedItem);
-                        shapes.put(menuUI.getArc(), Color.BLACK);
                     }
                     panel.repaint();
                 }
@@ -196,7 +188,19 @@ class Paint extends JFrame {
                 g2.fillRect(0, 0, getWidth(), getHeight());
                 g2.setColor(Color.BLACK);
 
+                for (Shape shape : shapes.keySet()) {
+                    g2.setColor(shapes.get(shape));
+                    g2.draw(shape);
+                }
+
                 if (menuUI != null && menuUI.getArc() != null) {
+                    g2.setColor(Color.LIGHT_GRAY);
+                    g2.fill(menuUI.getCircle());
+                    g2.setColor(Color.BLACK);
+                    g2.draw(menuUI.getCircle());
+                    for (Line2D.Double line: menuUI.getLines()){
+                        g2.draw(line);
+                    }
                     g2.fill(menuUI.getArc());
                     for(int i=0; i < markingMenu.getNbItems(); i++) {
                         g2.drawString(
@@ -205,12 +209,6 @@ class Paint extends JFrame {
                                 (int)(menuUI.getMenuY() + (100.0 * Math.sin((((2 * Math.PI)/markingMenu.getNbItems()) * i)+(Math.PI/markingMenu.getNbItems()))))
                         );
                     }
-
-                }
-
-                for (Shape shape : shapes.keySet()) {
-                    g2.setColor(shapes.get(shape));
-                    g2.draw(shape);
                 }
             }
         });
