@@ -13,12 +13,17 @@ class MarkingMenuUI {
     private GeneralPath polygon;
     private List<JPanel> itemNames = new ArrayList<>();
 
+    private int menuX;
+    private int menuY;
+
 
     MarkingMenuUI(double x, double y, double r, int nbItems) {
         this.nbItems = nbItems;
         this.circle = new Ellipse2D.Double(x - r, y - r, 2 * r, 2 * r);
         this.drawLines(x, y, r);
         this.drawItemNames();
+        this.menuX = (int)x;
+        this.menuY = (int)y;
     }
 
     private void drawItemNames() {
@@ -33,22 +38,22 @@ class MarkingMenuUI {
         double angle1 = ((2 * Math.PI) / nbItems) * i;
         double angle2 = ((2 * Math.PI) / nbItems) * (i + 1.0);
 
-        int x1Points[] = {
+        int xPoints[] = {
                 (int) menuX,
                 (int) (menuX + (50.0 * Math.cos(angle1))),
                 (int) (menuX + (50.0 * Math.cos(angle2)))
         };
-        int y1Points[] = {
+        int yPoints[] = {
                 (int) menuY,
                 (int) (menuY + (50.0 * Math.sin(angle1))),
                 (int) (menuY + (50.0 * Math.sin(angle2)))
         };
 
-        polygon = new GeneralPath(GeneralPath.WIND_EVEN_ODD, x1Points.length);
-        polygon.moveTo(x1Points[0], y1Points[0]);
+        polygon = new GeneralPath(GeneralPath.WIND_EVEN_ODD, xPoints.length);
+        polygon.moveTo(xPoints[0], yPoints[0]);
 
-        for (int index = 1; index < x1Points.length; index++) {
-            polygon.lineTo(x1Points[index], y1Points[index]);
+        for (int index = 1; index < xPoints.length; index++) {
+            polygon.lineTo(xPoints[index], yPoints[index]);
         }
 
         polygon.closePath();
@@ -83,6 +88,14 @@ class MarkingMenuUI {
 
     public List<JPanel> getItemNames() {
         return itemNames;
+    }
+
+    int getMenuX() {
+        return menuX;
+    }
+
+    int getMenuY() {
+        return menuY;
     }
 
 }

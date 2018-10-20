@@ -21,7 +21,9 @@ import javax.swing.event.*;
 class Paint extends JFrame {
     private HashMap<Shape, Color> shapes = new HashMap<>();
     private MarkingMenuUI menuUI;
-    JComboBox<ComboItem> colorList = new JComboBox<>();
+    private JComboBox<ComboItem> colorList = new JComboBox<>();
+    private int nbItem = 8;
+    private MarkingMenu markingMenu = new MarkingMenu(nbItem);
 
     private Graphics2D g2;
 
@@ -29,8 +31,6 @@ class Paint extends JFrame {
             implements MouseInputListener {
         Point o;
         Shape shape;
-        int nbItem = 8;
-        MarkingMenu markingMenu = new MarkingMenu(nbItem);
 
         Tool(String name) {
             super(name);
@@ -198,6 +198,14 @@ class Paint extends JFrame {
 
                 if (menuUI != null && menuUI.getPolygon() != null) {
                     g2.fill(menuUI.getPolygon());
+                    for(int i=0; i < markingMenu.getNbItems(); i++) {
+                        g2.drawString(
+                                String.valueOf(i),
+                                (int)(menuUI.getMenuX() + (100.0 * Math.cos((((2 * Math.PI)/markingMenu.getNbItems()) * i)+(Math.PI/markingMenu.getNbItems())))),
+                                (int)(menuUI.getMenuY() + (100.0 * Math.sin((((2 * Math.PI)/markingMenu.getNbItems()) * i)+(Math.PI/markingMenu.getNbItems()))))
+                        );
+                    }
+
                 }
 
                 for (Shape shape : shapes.keySet()) {
