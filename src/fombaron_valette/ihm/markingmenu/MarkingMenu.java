@@ -1,23 +1,29 @@
 package fombaron_valette.ihm.markingmenu;
 
-import java.awt.*;
+class MarkingMenu {
 
-public class MarkingMenu {
-    public int getNbItems() {
-        return nbItems;
+    private int nbItem;
+
+    MarkingMenu(int nbItem) {
+        this.nbItem = nbItem;
     }
 
-    private int nbItems;
+    int getSelectedItem(int mouseX, int mouseY, double menuX, double menuY) {
+        double angle = Math.atan((mouseY - menuY) / (mouseX - menuX)) * (180 / Math.PI);
 
-    MarkingMenu(int nbItems) {
-        this.nbItems = nbItems;
+        if (mouseX > menuX && mouseY < menuY) {
+            angle += 360;
+        } else if (mouseX < menuX) {
+            angle += 180;
+        }
+
+        int k = (int) ((angle * nbItem) / 360);
+        System.out.println("Angle : " + (int) angle + "°; Item n° " + k);
+
+        return k;
     }
 
-    public void show(Point o) {
-
-    }
-
-    public void getSelectedItem(int mouseX, int mouseY, double menuX, double menuY) {
-
+    int getNbItems() {
+        return nbItem;
     }
 }
