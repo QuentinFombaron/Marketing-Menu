@@ -3,9 +3,7 @@ package fombaron_valette.ihm.markingmenu;
 import static java.lang.Math.*;
 
 import java.awt.geom.*;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Vector;
+import java.util.*;
 import java.awt.BorderLayout;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -25,6 +23,8 @@ class Paint extends JFrame {
     private MarkingMenuUI menuUI;
     /* List containing the String in the menu dans the Color associated */
     private JComboBox<ComboItem> colorList = new JComboBox<>();
+    private JToolBar toolBar = new JToolBar();
+    private JButton defaultButton;
     /* Number of item in the menu */
     private int nbItem = 8;
     private MarkingMenu markingMenu = new MarkingMenu(nbItem);
@@ -83,6 +83,17 @@ class Paint extends JFrame {
                 shapes.remove(menuUI.getArc());
                 /* Set to null the Arc variable to clean the fill */
                 menuUI.setToNullArc();
+
+                int selectedItem = markingMenu.getSelectedItem(e.getX(), e.getY(), o.getX(), o.getY());
+                if (selectedItem >= 0 && selectedItem < 4) {
+                    colorList.setSelectedIndex(selectedItem);
+                } else if (selectedItem >= 4 && selectedItem < 7) {
+                    JButton seletedButton = new JButton(tools[selectedItem - 4]);
+                    seletedButton.doClick();
+                } else {
+                    System.out.println("OTHER ITEM");
+                }
+
             }
             panel.repaint();
         }
@@ -169,6 +180,7 @@ class Paint extends JFrame {
                 }
             }
     };
+
     private Tool tool;
 
     private JPanel panel;
@@ -186,15 +198,7 @@ class Paint extends JFrame {
         colorList.setMaximumSize(colorList.getPreferredSize());
         colorList.setSelectedIndex(0);
 
-        add(new JToolBar() {{
-            for (AbstractAction tool : tools) {
-                add(tool);
-            }
-            /* Add ComboList in JToolBar */
-            add(colorList);
-        }}, BorderLayout.NORTH);
-
-        add(panel = new JPanel() {
+        panel = new JPanel() {
             public void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 g2 = (Graphics2D) g;
@@ -218,21 +222,45 @@ class Paint extends JFrame {
                     g2.setColor(Color.BLACK);
                     /* Draw the marking menu : Circle + Lines + Arc */
                     g2.draw(menuUI.getCircle());
-                    for (Line2D.Double line: menuUI.getLines()){
+                    for (Line2D.Double line : menuUI.getLines()) {
                         g2.draw(line);
                     }
                     g2.fill(menuUI.getArc());
-                    for(int i=0; i < markingMenu.getNbItems(); i++) {
+
+                    List<String> itemNames = new LinkedList<>();
+                    itemNames.add("Black");
+                    itemNames.add("Red");
+                    itemNames.add("Green");
+                    itemNames.add("Blue");
+                    itemNames.add("Pen");
+                    itemNames.add("Rect.");
+                    itemNames.add("Elip.");
+                    itemNames.add("Other");
+
+                    for (int i = 0; i < markingMenu.getNbItems(); i++) {
                         /* Draw item names for each item */
                         g2.drawString(
-                                String.valueOf(i),
-                                (int)(menuUI.getMenuX() + (100.0 * Math.cos((((2 * Math.PI)/markingMenu.getNbItems()) * i)+(Math.PI/markingMenu.getNbItems())))),
-                                (int)(menuUI.getMenuY() + (100.0 * Math.sin((((2 * Math.PI)/markingMenu.getNbItems()) * i)+(Math.PI/markingMenu.getNbItems()))))
+                                itemNames.get(i),
+                                (int) (menuUI.getMenuX() + (100.0 * Math.cos((((2 * Math.PI) / markingMenu.getNbItems()) * i) + (Math.PI / markingMenu.getNbItems())))),
+                                (int) (menuUI.getMenuY() + (100.0 * Math.sin((((2 * Math.PI) / markingMenu.getNbItems()) * i) + (Math.PI / markingMenu.getNbItems()))))
                         );
                     }
                 }
             }
-        });
+        };
+
+        for (AbstractAction tool : tools) {
+            toolBar.add(tool);
+            if (tool.getValue(Action.NAME) == "Pen") {
+                defaultButton = new JButton(tool);
+                defaultButton.doClick();
+            }
+        }
+        toolBar.add(colorList);
+
+        add(toolBar, BorderLayout.NORTH);
+
+        add(panel);
 
         pack();
         setVisible(true);
