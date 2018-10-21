@@ -20,16 +20,18 @@ import javax.swing.*;
 import javax.swing.event.*;
 
 class Paint extends JFrame {
+    /* Hashmap containing the shape and the associated color */
     private HashMap<Shape, Color> shapes = new HashMap<>();
     private MarkingMenuUI menuUI;
+    /* List containing the String in the menu dans the Color associated */
     private JComboBox<ComboItem> colorList = new JComboBox<>();
+    /* Number of item in the menu */
     private int nbItem = 8;
     private MarkingMenu markingMenu = new MarkingMenu(nbItem);
 
     private Graphics2D g2;
 
-    class Tool extends AbstractAction
-            implements MouseInputListener {
+    class Tool extends AbstractAction implements MouseInputListener {
         Point o;
         Shape shape;
 
@@ -57,7 +59,9 @@ class Paint extends JFrame {
 
         public void mousePressed(MouseEvent e) {
             o = e.getPoint();
+            /* Right click is pressed */
             if (e.getButton() == MouseEvent.BUTTON3) {
+                /* Get the selected item */
                 int selectedItem = markingMenu.getSelectedItem(e.getX(), e.getY(), o.getX(), o.getY());
                 openMenu(selectedItem);
             }
@@ -67,13 +71,17 @@ class Paint extends JFrame {
         public void mouseReleased(MouseEvent e) {
             shape = null;
 
+            /* Right click is released */
             if (e.getButton() == MouseEvent.BUTTON3) {
-
+                /* Remove circle shape */
                 shapes.remove(menuUI.getCircle());
+                /* Remove all line shapes */
                 for (Line2D.Double line : menuUI.getLines()) {
                     shapes.remove(line);
                 }
+                /* Remove arc shape */
                 shapes.remove(menuUI.getArc());
+                /* Set to null the Arc variable to clean the fill */
                 menuUI.setToNullArc();
             }
             panel.repaint();
@@ -89,10 +97,12 @@ class Paint extends JFrame {
         private void openMenu(int selectedItem) {
             menuUI = (MarkingMenuUI) shape;
             if (menuUI == null) {
+                /* Set the menu diameter to 300px */
                 int diameter = 300;
                 int radius = diameter / 2;
                 menuUI = new MarkingMenuUI(o.getX(), o.getY(), radius, markingMenu.getNbItems());
 
+                /* Draw the Arc showing the selected item */
                 menuUI.drawSelectedItem(o.getX(), o.getY(), selectedItem);
             }
         }
@@ -108,8 +118,10 @@ class Paint extends JFrame {
                             path.moveTo(o.getX(), o.getY());
                         }
                         path.lineTo(e.getX(), e.getY());
+                        /* Add the shape with the selected color */
                         shapes.put(shape = path, ((ComboItem) colorList.getSelectedItem()).getValue());
                     } else if (e.getButton() == MouseEvent.BUTTON3) {
+                        /* Redraw the Arc with the selected item when the mouse is dragged */
                         shapes.remove(menuUI.getArc());
                         int selectedItem = markingMenu.getSelectedItem(e.getX(), e.getY(), o.getX(), o.getY());
                         menuUI.drawSelectedItem(o.getX(), o.getY(), selectedItem);
@@ -126,8 +138,10 @@ class Paint extends JFrame {
                             rect = new Rectangle2D.Double(o.getX(), o.getY(), 0, 0);
                         }
                         rect.setRect(min(e.getX(), o.getX()), min(e.getY(), o.getY()), abs(e.getX() - o.getX()), abs(e.getY() - o.getY()));
+                        /* Add the shape with the selected color */
                         shapes.put(shape = rect, ((ComboItem) colorList.getSelectedItem()).getValue());
                     } else if (e.getButton() == MouseEvent.BUTTON3) {
+                        /* Redraw the Arc with the selected item when the mouse is dragged */
                         shapes.remove(menuUI.getArc());
                         int selectedItem = markingMenu.getSelectedItem(e.getX(), e.getY(), o.getX(), o.getY());
                         menuUI.drawSelectedItem(o.getX(), o.getY(), selectedItem);
@@ -142,10 +156,11 @@ class Paint extends JFrame {
                         if (elip == null) {
                             elip = new Ellipse2D.Double(o.getX(), o.getY(), 0, 0);
                         }
-                        elip.setFrame(min(e.getX(), o.getX()), min(e.getY(), o.getY()),
-                                abs(e.getX() - o.getX()), abs(e.getY() - o.getY()));
+                        elip.setFrame(min(e.getX(), o.getX()), min(e.getY(), o.getY()), abs(e.getX() - o.getX()), abs(e.getY() - o.getY()));
+                        /* Add the shape with the selected color */
                         shapes.put(shape = elip, ((ComboItem) colorList.getSelectedItem()).getValue());
                     } else if (e.getButton() == MouseEvent.BUTTON3) {
+                        /* Redraw the Arc with the selected item when the mouse is dragged */
                         shapes.remove(menuUI.getArc());
                         int selectedItem = markingMenu.getSelectedItem(e.getX(), e.getY(), o.getX(), o.getY());
                         menuUI.drawSelectedItem(o.getX(), o.getY(), selectedItem);
@@ -163,6 +178,7 @@ class Paint extends JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setMinimumSize(new Dimension(800, 600));
 
+        /* Add the possible colors in the Menu */
         colorList.addItem(new ComboItem("Black", Color.BLACK));
         colorList.addItem(new ComboItem("Red", Color.RED));
         colorList.addItem(new ComboItem("Green", Color.GREEN));
@@ -174,6 +190,7 @@ class Paint extends JFrame {
             for (AbstractAction tool : tools) {
                 add(tool);
             }
+            /* Add ComboList in JToolBar */
             add(colorList);
         }}, BorderLayout.NORTH);
 
@@ -189,20 +206,24 @@ class Paint extends JFrame {
                 g2.setColor(Color.BLACK);
 
                 for (Shape shape : shapes.keySet()) {
+                    /* Set the selected color for each shape */
                     g2.setColor(shapes.get(shape));
                     g2.draw(shape);
                 }
 
                 if (menuUI != null && menuUI.getArc() != null) {
                     g2.setColor(Color.LIGHT_GRAY);
+                    /* Fill the circle shape */
                     g2.fill(menuUI.getCircle());
                     g2.setColor(Color.BLACK);
+                    /* Draw the marking menu : Circle + Lines + Arc */
                     g2.draw(menuUI.getCircle());
                     for (Line2D.Double line: menuUI.getLines()){
                         g2.draw(line);
                     }
                     g2.fill(menuUI.getArc());
                     for(int i=0; i < markingMenu.getNbItems(); i++) {
+                        /* Draw item names for each item */
                         g2.drawString(
                                 String.valueOf(i),
                                 (int)(menuUI.getMenuX() + (100.0 * Math.cos((((2 * Math.PI)/markingMenu.getNbItems()) * i)+(Math.PI/markingMenu.getNbItems())))),

@@ -8,6 +8,7 @@ class MarkingMenu {
         this.nbItem = nbItem;
     }
 
+    /* Set selected item on the marking menu */
     int getSelectedItem(int mouseX, int mouseY, double menuX, double menuY) {
         double angle = Math.atan((mouseY - menuY) / (mouseX - menuX)) * (180 / Math.PI);
 
