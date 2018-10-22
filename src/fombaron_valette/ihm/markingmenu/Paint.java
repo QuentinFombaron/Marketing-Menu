@@ -23,11 +23,10 @@ class Paint extends JFrame {
     private MarkingMenuUI menuUI;
     /* List containing the String in the menu dans the Color associated */
     private JComboBox<ComboItem> colorList = new JComboBox<>();
-    private JToolBar toolBar = new JToolBar();
-    private JButton defaultButton;
     /* Number of item in the menu */
     private int nbItem = 8;
     private MarkingMenu markingMenu = new MarkingMenu(nbItem);
+    private boolean inMenu = true;
 
     private Graphics2D g2;
 
@@ -80,7 +79,8 @@ class Paint extends JFrame {
                     shapes.remove(line);
                 }
                 /* Remove arc shape */
-                shapes.remove(menuUI.getArc());
+                shapes.remove(menuUI.getArcMenu());
+                shapes.remove(menuUI.getArcSecondMenu());
                 /* Set to null the Arc variable to clean the fill */
                 menuUI.setToNullArc();
 
@@ -133,9 +133,13 @@ class Paint extends JFrame {
                         shapes.put(shape = path, ((ComboItem) colorList.getSelectedItem()).getValue());
                     } else if (e.getButton() == MouseEvent.BUTTON3) {
                         /* Redraw the Arc with the selected item when the mouse is dragged */
-                        shapes.remove(menuUI.getArc());
+                        shapes.remove(menuUI.getArcMenu());
+                        shapes.remove(menuUI.getArcSecondMenu());
+
                         int selectedItem = markingMenu.getSelectedItem(e.getX(), e.getY(), o.getX(), o.getY());
                         menuUI.drawSelectedItem(o.getX(), o.getY(), selectedItem);
+                        inMenu = markingMenu.inMenu(e.getX(), e.getY(), o.getX(), o.getY());
+                        menuUI.drawSecondMenu(o.getX(), o.getY(), selectedItem);
                     }
                     panel.repaint();
                 }
@@ -153,9 +157,14 @@ class Paint extends JFrame {
                         shapes.put(shape = rect, ((ComboItem) colorList.getSelectedItem()).getValue());
                     } else if (e.getButton() == MouseEvent.BUTTON3) {
                         /* Redraw the Arc with the selected item when the mouse is dragged */
-                        shapes.remove(menuUI.getArc());
+                        shapes.remove(menuUI.getArcMenu());
+                        shapes.remove(menuUI.getArcSecondMenu());
+
                         int selectedItem = markingMenu.getSelectedItem(e.getX(), e.getY(), o.getX(), o.getY());
                         menuUI.drawSelectedItem(o.getX(), o.getY(), selectedItem);
+
+                        inMenu = markingMenu.inMenu(e.getX(), e.getY(), o.getX(), o.getY());
+                        menuUI.drawSecondMenu(o.getX(), o.getY(), selectedItem);
                     }
                     panel.repaint();
                 }
@@ -172,9 +181,14 @@ class Paint extends JFrame {
                         shapes.put(shape = elip, ((ComboItem) colorList.getSelectedItem()).getValue());
                     } else if (e.getButton() == MouseEvent.BUTTON3) {
                         /* Redraw the Arc with the selected item when the mouse is dragged */
-                        shapes.remove(menuUI.getArc());
+                        shapes.remove(menuUI.getArcMenu());
+                        shapes.remove(menuUI.getArcSecondMenu());
+
                         int selectedItem = markingMenu.getSelectedItem(e.getX(), e.getY(), o.getX(), o.getY());
                         menuUI.drawSelectedItem(o.getX(), o.getY(), selectedItem);
+
+                        inMenu = markingMenu.inMenu(e.getX(), e.getY(), o.getX(), o.getY());
+                        menuUI.drawSecondMenu(o.getX(), o.getY(), selectedItem);
                     }
                     panel.repaint();
                 }
@@ -215,17 +229,23 @@ class Paint extends JFrame {
                     g2.draw(shape);
                 }
 
-                if (menuUI != null && menuUI.getArc() != null) {
+                if (menuUI != null && menuUI.getArcMenu() != null) {
                     g2.setColor(Color.LIGHT_GRAY);
                     /* Fill the circle shape */
                     g2.fill(menuUI.getCircle());
-                    g2.setColor(Color.BLACK);
                     /* Draw the marking menu : Circle + Lines + Arc */
+                    g2.setColor(Color.GRAY);
+                    g2.fill(menuUI.getArcMenu());
+                    if (!inMenu) {
+                        g2.fill(menuUI.getArcSecondMenu());
+                    }
+
+                    g2.setColor(Color.BLACK);
                     g2.draw(menuUI.getCircle());
+
                     for (Line2D.Double line : menuUI.getLines()) {
                         g2.draw(line);
                     }
-                    g2.fill(menuUI.getArc());
 
                     List<String> itemNames = new LinkedList<>();
                     itemNames.add("Black");
@@ -249,10 +269,11 @@ class Paint extends JFrame {
             }
         };
 
+        JToolBar toolBar = new JToolBar();
         for (AbstractAction tool : tools) {
             toolBar.add(tool);
             if (tool.getValue(Action.NAME) == "Pen") {
-                defaultButton = new JButton(tool);
+                JButton defaultButton = new JButton(tool);
                 defaultButton.doClick();
             }
         }

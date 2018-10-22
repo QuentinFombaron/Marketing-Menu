@@ -24,6 +24,14 @@ class MarkingMenu {
         return k;
     }
 
+    boolean inMenu(int mouseX, int mouseY, double menuX, double menuY) {
+        double angle = Math.atan((mouseY - menuY) / (mouseX - menuX)) * (180 / Math.PI);
+        if (Math.abs((mouseX-menuX) / Math.cos(angle / (180/Math.PI))) >= 150) {
+            return false;
+        }
+        return true;
+    }
+
     int getNbItems() {
         return nbItem;
     }

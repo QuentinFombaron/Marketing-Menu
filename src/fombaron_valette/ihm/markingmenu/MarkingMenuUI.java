@@ -9,7 +9,8 @@ class MarkingMenuUI {
     
     private Ellipse2D.Double circle;
     private List<Line2D.Double> lines = new ArrayList<>();
-    private Arc2D.Double arc;
+    private Arc2D.Double arcMenu;
+    private Arc2D.Double arcSecondMenu;
 
     private int menuX;
     private int menuY;
@@ -27,26 +28,43 @@ class MarkingMenuUI {
     void drawSelectedItem(double menuX, double menuY, int i) {
         double angle = (double)-((360 / nbItem) * i);
 
-        arc = new Arc2D.Double(
-                menuX-50, 
-                menuY-50, 
-                100, 
-                100,
+        arcMenu = new Arc2D.Double(
+                menuX-150,
+                menuY-150,
+                300,
+                300,
                 angle,
                 (double)-(360/(nbItem)), Arc2D.PIE
         );
     }
     
     /* Draw lines in marking menu circle  */
-    private void drawLines(double x, double y, double r) {
+    void drawLines(double menuX, double menuY, double r) {
         for (int i = 0; i < nbItem; i++) {
             lines.add(new Line2D.Double(
-                    x,
-                    y,
-                    (x + r * Math.cos((i * (2 * Math.PI / nbItem)))),
-                    (y + r * Math.sin((i * (2 * Math.PI / nbItem))))
+                    menuX,
+                    menuY,
+                    (menuX + r * Math.cos((i * (2 * Math.PI / nbItem)))),
+                    (menuY + r * Math.sin((i * (2 * Math.PI / nbItem))))
             ));
         }
+    }
+
+    void drawSecondMenu(double menuX, double menuY, int i) {
+        double angle = (double)-((360 / nbItem) * i);
+
+        arcSecondMenu = new Arc2D.Double(
+                menuX-250,
+                menuY-250,
+                500,
+                500,
+                angle,
+                (double)-(360/(nbItem)), Arc2D.PIE
+        );
+    }
+
+    void drawLinesSecondMenu () {
+
     }
 
     List<Line2D.Double> getLines() {
@@ -57,12 +75,17 @@ class MarkingMenuUI {
         return circle;
     }
 
-    Arc2D.Double getArc() {
-        return arc;
+    Arc2D.Double getArcMenu() {
+        return arcMenu;
+    }
+
+    Arc2D.Double getArcSecondMenu() {
+        return arcSecondMenu;
     }
 
     void setToNullArc() {
-        this.arc = null;
+        this.arcMenu = null;
+        this.arcSecondMenu = null;
     }
     
     int getMenuX() {
