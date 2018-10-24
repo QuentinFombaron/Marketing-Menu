@@ -43,7 +43,7 @@ class MarkingMenuUI {
 
     /* Draw selected item in submenu */
     void drawSelectedSecondItem(double menuX, double menuY, int itemSelected, int itemSelectedSecondMenu, int nbItemSecondMenu) {
-        double angle = -((double)((360 / nbItem) * itemSelected) + (double)((itemSelectedSecondMenu+1)*((360 / nbItem) / nbItemSecondMenu)));
+        double angle = -(((double)(360 / nbItem) * itemSelected) + ((itemSelectedSecondMenu+1)*((double)(360 / nbItem) / nbItemSecondMenu)));
 
         arcSelectedSecondMenu = new Arc2D.Double(
                 menuX-250,
