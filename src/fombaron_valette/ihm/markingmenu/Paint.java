@@ -224,14 +224,14 @@ class Paint extends JFrame {
         setMinimumSize(new Dimension(800, 600));
 
         /* Add the possible colors in the Menu */
-        colorList.addItem(new ComboItem("Black", Color.BLACK));
-        colorList.addItem(new ComboItem("Red", Color.RED));
-        colorList.addItem(new ComboItem("Green", Color.GREEN));
-        colorList.addItem(new ComboItem("Blue", Color.BLUE));
-        colorList.addItem(new ComboItem("Yellow", Color.YELLOW));
-        colorList.addItem(new ComboItem("Magenta", Color.MAGENTA));
-        colorList.addItem(new ComboItem("Pink", Color.PINK));
-        colorList.addItem(new ComboItem("Gray", Color.GRAY));
+        colorList.addItem(new ComboItem("Black", new Color(53, 64, 80)));
+        colorList.addItem(new ComboItem("Red", new Color(218, 68, 83)));
+        colorList.addItem(new ComboItem("Orange", new Color(233, 87, 63)));
+        colorList.addItem(new ComboItem("Yellow", new Color(246, 187, 66)));
+        colorList.addItem(new ComboItem("Green", new Color(140, 193, 82)));
+        colorList.addItem(new ComboItem("Indigo", new Color(55, 188, 155)));
+        colorList.addItem(new ComboItem("Blue", new Color(74, 137, 220)));
+        colorList.addItem(new ComboItem("Purple", new Color(125, 70, 169)));
 
         colorList.setMaximumSize(colorList.getPreferredSize());
         colorList.setSelectedIndex(0);
@@ -254,7 +254,7 @@ class Paint extends JFrame {
                 }
 
                 if (menuUI != null && menuUI.getArcMenu() != null) {
-                    g2.setColor(Color.LIGHT_GRAY);
+                    g2.setColor(new Color(190,194, 198));
 
                     /* Submenu managment */
                     if (!inMenu && selectedItem != (nbItem - 1)) {
@@ -262,7 +262,7 @@ class Paint extends JFrame {
                         if (selectedItem == 1) {
                             g2.setColor(colorList.getItemAt(selectedSecondItem).getValue());
                         } else {
-                            g2.setColor(Color.DARK_GRAY);
+                            g2.setColor(new Color(131, 138, 140));
                         }
                         g2.fill(menuUI.getArcSelectedSecondMenu());
                         g2.setColor(Color.BLACK);
@@ -271,15 +271,15 @@ class Paint extends JFrame {
                         }
                     }
 
-                    g2.setColor(Color.LIGHT_GRAY);
+                    g2.setColor(new Color(190,194, 198));
 
                     /* Fill the circle shape */
                     g2.fill(menuUI.getCircle());
                     /* Draw the marking menu : Circle + Lines + Arc */
                     if (selectedItem == 2) {
-                        g2.setColor(Color.RED);
+                        g2.setColor(new Color(237, 85, 101));
                     } else {
-                        g2.setColor(Color.GRAY);
+                        g2.setColor(new Color(152, 163, 166));
                     }
                     g2.fill(menuUI.getArcMenu());
 
@@ -294,7 +294,7 @@ class Paint extends JFrame {
                     List<String> itemNames = new LinkedList<>();
                     itemNames.add("Tool");
                     itemNames.add("Color");
-                    itemNames.add("Exit");
+                    itemNames.add("Cancel");
 
                     List<String> secondItemToolNames = new LinkedList<>();
                     secondItemToolNames.add("Pen");
@@ -304,12 +304,12 @@ class Paint extends JFrame {
                     List<String> secondItemColorNames = new LinkedList<>();
                     secondItemColorNames.add("Black");
                     secondItemColorNames.add("Red");
-                    secondItemColorNames.add("Green");
-                    secondItemColorNames.add("Blue");
+                    secondItemColorNames.add("Orange");
                     secondItemColorNames.add("Yellow");
-                    secondItemColorNames.add("Magenta");
-                    secondItemColorNames.add("Pink");
-                    secondItemColorNames.add("Grey");
+                    secondItemColorNames.add("Green");
+                    secondItemColorNames.add("Indigo");
+                    secondItemColorNames.add("Blue");
+                    secondItemColorNames.add("Purple");
 
                     for (int i = 0; i < markingMenu.getNbItems(); i++) {
                         /* Draw item names for each item */
@@ -334,8 +334,8 @@ class Paint extends JFrame {
                                 case 1:
                                     g2.drawString(
                                             secondItemColorNames.get(i),
-                                            (int) (menuUI.getMenuX() + (225.0 * Math.cos(((((2 * Math.PI) / markingMenu.getNbItems()) / nbSecondMenu) * i) + ((Math.PI / markingMenu.getNbItems()) / nbSecondMenu) + ((2 * Math.PI) / nbItem)))),
-                                            (int) (menuUI.getMenuY() + (225.0 * Math.sin(((((2 * Math.PI) / markingMenu.getNbItems()) / nbSecondMenu) * i) + ((Math.PI / markingMenu.getNbItems()) / nbSecondMenu) + ((2 * Math.PI) / nbItem))))
+                                            (int) (menuUI.getMenuX() + (235.0 * Math.cos(((((2 * Math.PI) / markingMenu.getNbItems()) / nbSecondMenu) * i) + (.9*((Math.PI / markingMenu.getNbItems()) / nbSecondMenu)) + ((2 * Math.PI) / nbItem)))),
+                                            (int) (menuUI.getMenuY() + (235.0 * Math.sin(((((2 * Math.PI) / markingMenu.getNbItems()) / nbSecondMenu) * i) + (.9*((Math.PI / markingMenu.getNbItems()) / nbSecondMenu)) + ((2 * Math.PI) / nbItem))))
                                     );
                                     break;
                             }
