@@ -76,7 +76,9 @@ class Paint extends JFrame {
         }
 
         public void mousePressed(MouseEvent e) {
-            o = e.getPoint();
+            if (!rightButtonPressed) {
+                o = e.getPoint();
+            }
             /* Right click is pressed */
             if (e.getButton() == MouseEvent.BUTTON3 && !rightButtonPressed) {
                 rightButtonPressed = true;
