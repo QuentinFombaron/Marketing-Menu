@@ -1,11 +1,21 @@
 package fombaron_valette.ihm.markingmenu;
 
+import java.util.LinkedList;
+import java.util.List;
+
 class MarkingMenu {
 
     private int nbItem;
 
-    MarkingMenu(int nbItem) {
+    private List<String> itemNames;
+    private List<String> secondItemToolNames;
+    private List<String> secondItemColorNames;
+
+    MarkingMenu(int nbItem, List<String> itemNames, List<String> secondItemToolNames, List<String> secondItemColorNames) {
         this.nbItem = nbItem;
+        this.itemNames = itemNames;
+        this.secondItemToolNames = secondItemToolNames;
+        this.secondItemColorNames = secondItemColorNames;
     }
 
     /* Set selected item on the marking menu */
@@ -51,5 +61,17 @@ class MarkingMenu {
 
     int getNbItems() {
         return nbItem;
+    }
+
+    public String getItemNames(int index) {
+        return this.itemNames.get(index);
+    }
+
+    public String getItemColorNames(int index) {
+        return this.secondItemColorNames.get(index);
+    }
+
+    public String getItemToolNames(int index) {
+        return this.secondItemToolNames.get(index);
     }
 }

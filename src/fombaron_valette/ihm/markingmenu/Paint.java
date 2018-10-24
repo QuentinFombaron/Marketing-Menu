@@ -27,11 +27,25 @@ class Paint extends JFrame {
     private int nbItem = 3;
     /* Number of item in the submenu */
     private int nbSecondMenu;
-    private MarkingMenu markingMenu = new MarkingMenu(nbItem);
+
+    /* Principal marking menu items */
+    private List<String> itemNames = new LinkedList<>(Arrays.asList("Tools", "Colors", "Cancel"));
+
+    /* Submenu Tool items names */
+    private List<String> secondItemToolNames = new LinkedList<>(Arrays.asList("Pen", "Rect.", "Elips."));
+
+    /* Submenu Color items names */
+    private List<String> secondItemColorNames = new LinkedList<>(Arrays.asList("Black", "Red", "Orange", "Yellow", "Green", "Indigo", "Blue", "Purple"));
+
+
+    private MarkingMenu markingMenu = new MarkingMenu(nbItem, itemNames, secondItemToolNames, secondItemColorNames);
     private boolean inMenu = true;
 
     private int selectedItem;
     private int selectedSecondItem = -1;
+
+    /* Boolean to correct right + left mouse click in the same time bug */
+    private boolean rightButtonPressed;
 
     private Graphics2D g2;
 
@@ -64,7 +78,8 @@ class Paint extends JFrame {
         public void mousePressed(MouseEvent e) {
             o = e.getPoint();
             /* Right click is pressed */
-            if (e.getButton() == MouseEvent.BUTTON3) {
+            if (e.getButton() == MouseEvent.BUTTON3 && !rightButtonPressed) {
+                rightButtonPressed = true;
                 /* Get the selected item */
                 int selectedItem = 0;
                 inMenu = markingMenu.inMenu(e.getX(), e.getY(), o.getX(), o.getY());
@@ -77,7 +92,8 @@ class Paint extends JFrame {
             shape = null;
 
             /* Right click is released */
-            if (e.getButton() == MouseEvent.BUTTON3) {
+            if (e.getButton() == MouseEvent.BUTTON3 && rightButtonPressed) {
+                rightButtonPressed = false;
                 /* Remove circle shape */
                 shapes.remove(menuUI.getCircle());
                 /* Remove all line shapes */
@@ -103,7 +119,6 @@ class Paint extends JFrame {
                     /* Other */
                     System.out.println("EXIT");
                 }
-
             }
             panel.repaint();
         }
@@ -164,7 +179,7 @@ class Paint extends JFrame {
     private Tool tools[] = {
             new Tool("Pen") {
                 public void mouseDragged(MouseEvent e) {
-                    if (e.getButton() == MouseEvent.BUTTON1) {
+                    if (e.getButton() == MouseEvent.BUTTON1 && !rightButtonPressed) {
                         Path2D.Double path = (Path2D.Double) shape;
                         if (path == null) {
                             path = new Path2D.Double();
@@ -181,7 +196,7 @@ class Paint extends JFrame {
             },
             new Tool("Rectangle") {
                 public void mouseDragged(MouseEvent e) {
-                    if (e.getButton() == MouseEvent.BUTTON1) {
+                    if (e.getButton() == MouseEvent.BUTTON1 && !rightButtonPressed) {
                         Rectangle2D.Double rect = (Rectangle2D.Double) shape;
 
                         if (rect == null) {
@@ -198,7 +213,7 @@ class Paint extends JFrame {
             },
             new Tool("Elipse") {
                 public void mouseDragged(MouseEvent e) {
-                    if (e.getButton() == MouseEvent.BUTTON1) {
+                    if (e.getButton() == MouseEvent.BUTTON1 && !rightButtonPressed) {
                         Ellipse2D.Double elip = (Ellipse2D.Double) shape;
                         if (elip == null) {
                             elip = new Ellipse2D.Double(o.getX(), o.getY(), 0, 0);
@@ -291,30 +306,10 @@ class Paint extends JFrame {
                         g2.draw(line);
                     }
 
-                    List<String> itemNames = new LinkedList<>();
-                    itemNames.add("Tool");
-                    itemNames.add("Color");
-                    itemNames.add("Cancel");
-
-                    List<String> secondItemToolNames = new LinkedList<>();
-                    secondItemToolNames.add("Pen");
-                    secondItemToolNames.add("Rect.");
-                    secondItemToolNames.add("Elips.");
-
-                    List<String> secondItemColorNames = new LinkedList<>();
-                    secondItemColorNames.add("Black");
-                    secondItemColorNames.add("Red");
-                    secondItemColorNames.add("Orange");
-                    secondItemColorNames.add("Yellow");
-                    secondItemColorNames.add("Green");
-                    secondItemColorNames.add("Indigo");
-                    secondItemColorNames.add("Blue");
-                    secondItemColorNames.add("Purple");
-
                     for (int i = 0; i < markingMenu.getNbItems(); i++) {
                         /* Draw item names for each item */
                         g2.drawString(
-                                itemNames.get(i),
+                                markingMenu.getItemNames(i),
                                 (int) (menuUI.getMenuX() + (100.0 * Math.cos((((2 * Math.PI) / markingMenu.getNbItems()) * i) + (Math.PI / markingMenu.getNbItems())))),
                                 (int) (menuUI.getMenuY() + (100.0 * Math.sin((((2 * Math.PI) / markingMenu.getNbItems()) * i) + (Math.PI / markingMenu.getNbItems()))))
                         );
@@ -325,15 +320,17 @@ class Paint extends JFrame {
                             /* Draw item names for each item */
                             switch (selectedItem) {
                                 case 0:
+                                    /* Draw Tool item names */
                                     g2.drawString(
-                                            secondItemToolNames.get(i),
+                                            markingMenu.getItemToolNames(i),
                                             (int) (menuUI.getMenuX() + (200.0 * Math.cos(((((2 * Math.PI) / markingMenu.getNbItems()) / nbSecondMenu) * i) + ((Math.PI / markingMenu.getNbItems()) / nbSecondMenu)))),
                                             (int) (menuUI.getMenuY() + (200.0 * Math.sin(((((2 * Math.PI) / markingMenu.getNbItems()) / nbSecondMenu) * i) + ((Math.PI / markingMenu.getNbItems()) / nbSecondMenu))))
                                     );
                                     break;
                                 case 1:
+                                    /* Draw Color item names */
                                     g2.drawString(
-                                            secondItemColorNames.get(i),
+                                            markingMenu.getItemColorNames(i),
                                             (int) (menuUI.getMenuX() + (235.0 * Math.cos(((((2 * Math.PI) / markingMenu.getNbItems()) / nbSecondMenu) * i) + (.9*((Math.PI / markingMenu.getNbItems()) / nbSecondMenu)) + ((2 * Math.PI) / nbItem)))),
                                             (int) (menuUI.getMenuY() + (235.0 * Math.sin(((((2 * Math.PI) / markingMenu.getNbItems()) / nbSecondMenu) * i) + (.9*((Math.PI / markingMenu.getNbItems()) / nbSecondMenu)) + ((2 * Math.PI) / nbItem))))
                                     );
@@ -349,6 +346,7 @@ class Paint extends JFrame {
         JToolBar toolBar = new JToolBar();
         for (AbstractAction tool : tools) {
             toolBar.add(tool);
+            /* Default tool selection */
             if (tool.getValue(Action.NAME) == "Pen") {
                 JButton defaultButton = new JButton(tool);
                 defaultButton.doClick();
