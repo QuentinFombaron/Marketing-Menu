@@ -113,7 +113,7 @@ class MarkingMenuUI {
         return arcSecondMenu;
     }
 
-    public Arc2D.Double getArcSelectedSecondMenu() { return arcSelectedSecondMenu; }
+    Arc2D.Double getArcSelectedSecondMenu() { return arcSelectedSecondMenu; }
 
     void setToNullArc() {
         this.arcMenu = null;
